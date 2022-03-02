@@ -24,10 +24,13 @@ def make_hitobject(x:int, y:int, time:int, type:int=0b00000001, hitSound:int=0b0
 def generate_chunk(x:int, y:int):
 	return "|"+("|".join(list(":".join([str(point[0]+x),str(point[1]+y)]) for point in HOLDCIRCLE_CHUNK)))
 
-def make_holdcircle(x:int, y:int, time:int, length:float, bpm: float):
+def make_holdcircle(x:int, y:int, time:int, length:float, bpm: float, new_combo:bool = False):
 	osupixels_per_beat = SLIDER_MULTIPLIER*100
 	bpms = bpm/60000 #Beats per millisecond
 	osupixel_length = length*bpms*osupixels_per_beat
 	div = osupixel_length/HOLDCIRCLE_CHUNK_LENGTH
 	chunks = "B"+(generate_chunk(x,y)*round(div+0.5)) #round(X+0.5) is equal to ceil(X)
-	return make_hitobject(x,y,time,0b00000010,0,[chunks,1,osupixel_length])
+	hotype = 0b00000010
+	if new_combo:
+		hotype|=0b00000100
+	return make_hitobject(x,y,time,hotype,0,[chunks,1,osupixel_length])
