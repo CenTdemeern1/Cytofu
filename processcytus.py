@@ -6,6 +6,7 @@ END_TICK = "end_tick"
 SCAN_LINE_DIRECTION = "scan_line_direction"
 DOWN = -1
 TEMPO_LIST = "tempo_list"
+PAGE_LIST = "page_list"
 TICK = "tick"
 VALUE = "value"
 
@@ -13,7 +14,7 @@ def is_tick_in_page(tick, page):
 	return page[START_TICK]<=tick<=page[END_TICK]
 
 def get_page_at_tick(beatmap, tick):
-	for page in beatmap["page_list"]:
+	for page in beatmap[PAGE_LIST]:
 		if is_tick_in_page(tick, page):
 			return page
 
@@ -23,6 +24,15 @@ def get_y_at_tick(beatmap, tick):
 	if page[SCAN_LINE_DIRECTION] == DOWN:
 		fraction=1-fraction
 	return fraction
+
+def get_tempo_at_tick(beatmap, tick):
+	val=0
+	for temposet in beatmap[TEMPO_LIST]:
+		if temposet[TICK]>tick:
+			return val
+		else:
+			val = temposet[VALUE]
+	return val
 
 def tempo_to_bpm(tempo):
 	return 60000000 / tempo

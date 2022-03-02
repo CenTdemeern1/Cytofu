@@ -14,8 +14,25 @@ for timingpoint in beatmap["tempo_list"]:
 
 print("[HitObjects]")
 for hitobject in beatmap["note_list"]:
-	print(makeosu.make_hitobject(
-		(hitobject["x"]*makeosu.WIDTH)+makeosu.XOFF,
-		((1-processcytus.get_y_at_tick(beatmap, hitobject["tick"]))*makeosu.HEIGHT)+makeosu.YOFF,
-		processcytus.tick_timestamp_to_ms(beatmap,hitobject["tick"])
-		))
+	if hitobject["type"] in (1,2):
+		x=(hitobject["x"]*makeosu.WIDTH)+makeosu.XOFF
+		y=((1-processcytus.get_y_at_tick(beatmap, hitobject["tick"]))*makeosu.HEIGHT)+makeosu.YOFF
+		time=processcytus.tick_timestamp_to_ms(beatmap,hitobject["tick"])
+		length=processcytus.tick_timestamp_to_ms(beatmap,hitobject["tick"]+hitobject["hold_tick"])-time
+		bpm=processcytus.tempo_to_bpm(processcytus.get_tempo_at_tick(beatmap,hitobject["tick"]))
+		print(makeosu.make_holdcircle(
+			x,
+			y,
+			time,
+			length,
+			bpm
+			))
+	else:
+		x=(hitobject["x"]*makeosu.WIDTH)+makeosu.XOFF
+		y=((1-processcytus.get_y_at_tick(beatmap, hitobject["tick"]))*makeosu.HEIGHT)+makeosu.YOFF
+		time=processcytus.tick_timestamp_to_ms(beatmap,hitobject["tick"])
+		print(makeosu.make_hitobject(
+			x,
+			y,
+			time
+			))
